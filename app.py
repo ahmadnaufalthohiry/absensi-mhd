@@ -8,7 +8,12 @@ from openpyxl import Workbook
 from math import radians, sin, cos, asin, sqrt
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-DATA = os.environ.get("ABSENSI_DATA", os.path.join(BASE, "data"))
+# Vercel menggunakan filesystem read-only.
+# Gunakan /tmp untuk data sementara di Vercel.
+if os.environ.get("VERCEL") == "1":
+    DATA = os.environ.get("ABSENSI_DATA", "/tmp/absensi-data")
+else:
+    DATA = os.environ.get("ABSENSI_DATA", os.path.join(BASE, "data"))
 DB, FOTO = os.path.join(DATA, "absensi.db"), os.path.join(DATA, "foto")  # foto disimpan privat
 WIB = timezone(timedelta(hours=7))
 TOLERANSI = 10   # menit boleh telat
