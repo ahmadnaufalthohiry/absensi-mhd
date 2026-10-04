@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% from "_m.html" import ic, cam, chip %}{% block t %}Beranda{% endblock %}{% block c %}
+<section class=hello><small>{{tgl}}</small><div class=clock id=clock>--:--:--</div><p>Assalamu'alaikum, {{session.nama}}</p></section>
+<div class=page-h><h2>Jadwal mengajar hari ini</h2></div>
+{% for r in rows %}{% set s = 0 if not r.aid else (1 if not r.waktu_pulang else 2) %}
+<article class=card>
+<div class=job-h><div class=time><b>{{r.jam_masuk}}</b><small>{{r.jam_pulang}}</small></div><div><h3>{{r.lokasi}}</h3>{% if s %}{{chip(r.status)}}{% else %}<span class=chip>Belum absen</span>{% endif %}</div></div>
+<ol class=steps><li class="{{'done' if s>0 else 'on'}}">1 · Masuk</li><li class="{{'done' if s>1 else ('on' if s==1 else '')}}">2 · Mengajar</li><li class="{{'done' if s>1 else ''}}">3 · Pulang</li></ol>
+{% if s==0 %}<form method=post action="/absen/masuk/{{r.id}}" class="cam f">{{cam()}}<label>Materi yang akan diajarkan<textarea name=materi required placeholder="Contoh: Fiqih bab thaharah"></textarea></label><button class=btn>{{ic('check')}}Absen Masuk</button></form>
+{% elif s==1 %}<p class=muted style="margin-bottom:12px">Masuk pukul <b>{{r.waktu_masuk}}</b> · Materi: {{r.materi}}</p>
+<form method=post action="/absen/pulang/{{r.aid}}" class="cam f">{{cam()}}<label>Target pembelajaran<select name=target><option>Tercapai<option>Sebagian<option>Tidak tercapai</select></label><label>Kendala<textarea name=kendala placeholder="Wajib diisi jika target belum tercapai"></textarea></label><button class=btn>{{ic('check')}}Absen Pulang</button></form>
+{% else %}<p class=muted>{{ic('check')}} Selesai · {{r.waktu_masuk}} – {{r.waktu_pulang}}</p>{% endif %}</article>
+{% else %}<div class="card empty">Tidak ada jadwal mengajar hari ini.</div>{% endfor %}
+<div class=page-h style="margin-top:24px"><h2>Riwayat terakhir</h2></div>
+<div class="card w"><table class=tbl><thead><tr><th>Tanggal<th>Lokasi<th>Masuk<th>Pulang<th>Status<th>Target</thead>
+{% for a in riwayat %}<tr><td data-label=Tanggal>{{a.tanggal}}<td data-label=Lokasi>{{a.lokasi}}<td data-label=Masuk>{{a.waktu_masuk}}<td data-label=Pulang>{{a.waktu_pulang or '-'}}<td data-label=Status>{{chip(a.status)}}<td data-label=Target>{{a.target or '-'}}{% endfor %}</table></div>{% endblock %}

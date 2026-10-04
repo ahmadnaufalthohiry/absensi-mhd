@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% from "_m.html" import ic %}{% block t %}Kelola{% endblock %}{% block c %}
+<div class=page-h><h2>Kelola data</h2></div>
+<div class="grid g2"><div class=card><h3>Tambah guru/ustadz</h3><form method=post action=/admin/guru class=f><label>Nama<input name=nama required></label><label>Username<input name=username required></label><label>Password<input name=password required></label><button class=btn>{{ic('plus')}}Tambah guru</button></form></div>
+<div class=card><h3>Tambah jadwal mengajar</h3><form method=post action=/admin/jadwal class=f>
+<label>Guru<select name=user_id>{% for g in gurus %}<option value={{g.id}}>{{g.nama}}{% endfor %}</select></label>
+<label>Lokasi<select name=lokasi_id>{% for l in lokasi %}<option value={{l.id}}>{{l.nama}}{% endfor %}</select></label>
+
+<div><span class=lbl>Hari mengajar</span>
+<div class=days>{% for h in hari %}<label class=day><input type=checkbox name=hari value={{loop.index0}}><span>{{h[:3]}}</span></label>{% endfor %}</div>
+<div class=days style="margin-top:8px"><button type=button class="btn ghost sm" data-pilih="0-5">Senin–Sabtu</button></div></div>
+    
+<div class="f row"><label>Jam masuk<input type=time name=jam_masuk required></label><label>Jam pulang<input type=time name=jam_pulang required></label></div>
+<button class=btn>{{ic('plus')}}Tambah jadwal</button></form></div></div>
+
+<div class=card><h3>Lokasi &amp; radius absen</h3>
+{% for l in lokasi %}<form method=post action="/admin/lokasi/{{l.id}}" class="f row" style="margin-bottom:14px"><div><b>{{l.nama}}</b></div>
+<label>Latitude<input name=lat value="{{l.lat if l.lat is not none else ''}}" required></label>
+<label>Longitude<input name=lng value="{{l.lng if l.lng is not none else ''}}" required></label>
+<label>Radius (m)<input name=radius type=number min=10 value="{{l.radius or 100}}" required></label>
+<button type=button class="btn ghost sm posku">📍 Pakai posisi saya</button><button class="btn sm">Simpan</button></form>{% endfor %}</div>
+
+<div class=card><h3>Daftar jadwal</h3><table class=tbl><thead><tr><th>Guru<th>Jadwal</thead>
+{% for g in jadwal %}<tr><td data-label=Guru><b>{{g.guru}}</b>
+<td data-label=Jadwal><div class=jls>{% for b in g.blok %}<div class=jl><div><b>{{b.hari}}</b> · {{b.jam}}<small>{{b.lokasi}}</small></div>
+<form method=post action=/admin/jadwal/hapus data-confirm="Hapus jadwal ini (semua hari di baris ini)?"><input type=hidden name=ids value="{{b.ids}}"><button class="btn danger sm" title=Hapus>{{ic('trash')}}</button></form></div>{% endfor %}</div>
+{% else %}<tr><td class=empty>Belum ada jadwal.{% endfor %}</table></div>
+{% endblock %}

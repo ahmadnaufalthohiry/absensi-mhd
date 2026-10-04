@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% from "_m.html" import ic, chip %}{% block t %}Rekap{% endblock %}{% block c %}
+{% set n = ringkas.values()|sum(attribute='sesi') %}{% set t = ringkas.values()|sum(attribute='telat') %}{% set lk = ringkas.values()|sum(attribute='lengkap') %}
+<div class=page-h><h2>Rekap absensi</h2><a class="btn ghost sm" href="/rekap.xlsx?{{qs}}">{{ic('download')}}Unduh Excel</a></div>
+<form class="card f row"><label>Dari<input type=date name=dari value="{{dari}}"></label><label>Sampai<input type=date name=sampai value="{{sampai}}"></label>
+<label>Lokasi<select name=lokasi><option value="">Semua lokasi{% for l in lokasi %}<option value={{l.id}} {{'selected' if lok==l.id|string}}>{{l.nama}}{% endfor %}</select></label><button class=btn>Tampilkan</button></form>
+<div class=stats><div class=stat><b>{{n}}</b><span>Total sesi</span></div><div class=stat><b>{{n-t}}</b><span>Tepat waktu</span></div><div class=stat><b>{{t}}</b><span>Terlambat</span></div><div class=stat><b>{{lk}}</b><span>Lengkap (ada pulang)</span></div></div>
+<div class="card w"><h3>Ringkasan per guru</h3><table class=tbl><thead><tr><th>Guru<th>Sesi<th>Terlambat<th>Lengkap</thead>
+{% for nm,s in ringkas.items() %}<tr><td data-label=Guru>{{nm}}<td data-label=Sesi>{{s.sesi}}<td data-label=Terlambat>{{s.telat}}<td data-label=Lengkap>{{s.lengkap}}{% else %}<tr><td class=empty>Belum ada data pada rentang ini.{% endfor %}</table></div>
+<div class="card w"><h3>Detail</h3><table class=tbl><thead><tr><th>Tanggal<th>Guru<th>Lokasi<th>Masuk<th>Pulang<th>Status<th>Materi<th>Target / Kendala<th>Foto</thead>
+{% for r in rows %}<tr><td data-label=Tanggal>{{r.tanggal}}<td data-label=Guru>{{r.guru}}<td data-label=Lokasi>{{r.lokasi}}<td data-label=Masuk>{{r.waktu_masuk}}<td data-label=Pulang>{{r.waktu_pulang or '-'}}<td data-label=Status>{{chip(r.status)}}<td data-label=Materi>{{r.materi}}<td data-label="Target / Kendala">{{r.target or '-'}} {{r.kendala or ''}}<td data-label=Foto><a href="/foto/{{r.foto_masuk}}" target=_blank>masuk</a>{% if r.foto_pulang %} · <a href="/foto/{{r.foto_pulang}}" target=_blank>pulang</a>{% endif %}{% endfor %}</table></div>{% endblock %}

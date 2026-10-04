@@ -1,0 +1,16 @@
+{% macro ic(n) %}<svg class="ic"><use href="#i-{{n}}" /></svg>{% endmacro %} {%
+macro cam() %}
+<div class="frame" hidden>
+  <video autoplay playsinline muted hidden></video><canvas hidden></canvas>
+</div>
+<input type="hidden" name="foto" /><input type="hidden" name="lat" /><input
+  type="hidden"
+  name="lng"
+/><input type="hidden" name="acc" /><span class="chip gps"
+  >📍 Mencari lokasi…</span
+><button type="button" class="btn ghost snap">
+  {{ic('camera')}}<span>Buka kamera</span></button
+>{% endmacro %} {% macro chip(s) %}<span
+  class="chip {{'bad' if s=='Terlambat' else 'ok'}}"
+  >{{s}}</span
+>{% endmacro %}

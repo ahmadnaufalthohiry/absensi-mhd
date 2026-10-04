@@ -1,0 +1,9 @@
+<!doctype html><html lang=id><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=theme-color content="#064634">
+<title>{% block t %}Absensi{% endblock %} · Mubarokulhuda</title><link rel=stylesheet href="/static/style.css"><link rel=icon href="/static/favicon.png"><link rel=icon type="image/png" href="/static/favicon.png">
+<link rel=apple-touch-icon href="/static/logo.png">
+{% from "_m.html" import ic %}{% include "_sprite.html" %}
+<header class=top><div class=wrap><a class=brand href=/><img class=logo src="/static/logo.png" alt="Logo MHD Mubarokulhuda"><span><b>Absensi Guru</b><small>MHD Mubarokulhuda</small></span></a>
+{% if session.uid %}{% if session.role=='admin' %}<nav class=nav><a href=/admin class="{{'on' if request.path.startswith('/admin')}}">{{ic('users')}}<span>Kelola</span></a><a href=/rekap class="{{'on' if request.path.startswith('/rekap')}}">{{ic('chart')}}<span>Rekap</span></a></nav>{% endif %}
+<div class=me><span class=av>{{session.nama[:1]|upper}}</span><span class=nm>{{session.nama}}</span><a href=/logout title=Keluar>{{ic('logout')}}</a></div>{% endif %}</div></header>
+<main class=wrap>{% for m in get_flashed_messages() %}<div class=toast>{{m}}</div>{% endfor %}{% block c %}{% endblock %}</main>
+<script src="/static/app.js"></script></html>
